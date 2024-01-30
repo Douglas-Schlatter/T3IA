@@ -114,6 +114,17 @@ def expande(nodo:Nodo)->Set[Nodo]:
         listaNodos.add(Nodo(estado, nodo, acao, nodo.custo+1))
     return listaNodos
 
+def caminho(nodo: Nodo):
+
+    caminho = []
+    nodoAtual = nodo
+
+    while(nodoAtual.pai != None):
+        caminho.append(nodoAtual.estado)
+        nodoAtual = nodoAtual.pai
+    caminho.append(nodoAtual.estado)    #O loop não adiciona o último estado
+    caminho.reverse()            #Precisa inverter porque é adicionado o caminho ao contrario na lista
+    return caminho
 
 def astar_hamming(estado:str)->list[str]:
     """
@@ -124,9 +135,21 @@ def astar_hamming(estado:str)->list[str]:
     :param estado: str
     :return:
     """
-    # substituir a linha abaixo pelo seu codigo
-    raise NotImplementedError
 
+    # substituir a linha abaixo pelo seu codigo
+
+    visitados = []
+    fronteira = [Nodo(estado, None, '', 0)]
+
+    while (fronteira != []):
+        nodoAtual = fronteira.pop() #Aqui depende da politica
+        if (nodoAtual.estado == "12345678_"):
+            return caminho(nodoAtual)
+        #elif(nodoAtual não está em visitados)  TODO
+        else:
+            visitados.append(nodoAtual)
+            fronteira.append(expande(nodoAtual))
+            
 
 def astar_manhattan(estado:str)->list[str]:
     """
