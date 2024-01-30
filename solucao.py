@@ -6,12 +6,9 @@ class Nodo:
     """
     Implemente a classe Nodo com os atributos descritos na funcao init
     """
-   # def __init__(self, estado:str, pai:Nodo, acao:str, custo:int): -> deixamos comentado aqui por enquanto para conseguir testar a ex1
-    def __init__(self, estado:str, pai, acao:str, custo:int):
-        self.estado = estado
-        self.pai= pai
-        self.acao = acao
-        self.custo = custo
+    def __init__(self, estado:str, acao:str, custo:int): #-> deixamos comentado aqui por enquanto para conseguir testar a ex1
+    #def __init__(self, estado:str, pai, acao:str, custo:int):
+
         """
         Inicializa o nodo com os atributos recebidos
         :param estado:str, representacao do estado do 8-puzzle
@@ -20,16 +17,23 @@ class Nodo:
         :param custo:int, custo do caminho da raiz até este nó
         """
         # substitua a linha abaixo pelo seu codigo
-        
-        raise NotImplementedError
+        self.estado = estado
+        self.pai= None
+        self.acao = acao
+        self.custo = custo + 1
+        #raise NotImplementedError
+
+def addFather(child: Nodo , pai:Nodo):
+    child.pai = pai
+
 
 def trocaChar(estado, pos, pos2):
-    print("estado recebido: "+ estado)
+    #print("estado recebido: "+ estado)
     iCarac = estado[pos]
     newEst = estado
     newEst = newEst[:pos] +'_'+ newEst[pos+1:]
     newEst = newEst[:pos2] + iCarac + newEst[pos2+1:]
-    print("estado: " + newEst)
+    #print("estado: " + newEst)
     return newEst
 
 
@@ -44,26 +48,27 @@ def sucessor(estado:str)->Set[Tuple[str,str]]:
      # substituir a linha abaixo pelo seu codigo
    # raise NotImplementedError
     cTuplas = set()
+    #cTuplas = []
     blankPos = estado.rfind('_')
 
 # string = string[:position] + new_character + string[position+1:]
     if (blankPos >= 3):    
        # cTuplas.add(("acima",newEst))
+        #cTuplas.add(("acima",trocaChar(estado, blankPos-3, blankPos)))
         cTuplas.add(("acima",trocaChar(estado, blankPos-3, blankPos)))
-
         # pode ir pra cima
         #   trocar barra com barra-3 
     if (blankPos <= 5):
-        """
-        cTuplas.add(0)
-        print("estado recebido: "+ estado)
-        iCarac = estado[blankPos+3]
-        newEst = estado 
-        newEst = newEst[:blankPos+3] +'_'+ newEst[blankPos+4:]
-        newEst = newEst[:blankPos] + iCarac + newEst[blankPos+1:]
-        print("tupla de saida: " + "(abaixo,"+ newEst+")")
-        cTuplas.add(("abaixo",newEst))
-        """
+       # """
+        #cTuplas.add(0)
+        #print("estado recebido: "+ estado)
+        #iCarac = estado[blankPos+3]
+        #newEst = estado 
+        #newEst = newEst[:blankPos+3] +'_'+ newEst[blankPos+4:]
+        #newEst = newEst[:blankPos] + iCarac + newEst[blankPos+1:]
+        #print("tupla de saida: " + "(abaixo,"+ newEst+")")
+        #cTuplas.add(("abaixo",newEst))
+        #"""
         cTuplas.add(("abaixo",trocaChar(estado, blankPos+3, blankPos)))
         # pode ir pra baixo
         #   trocar barra com barra+3
@@ -77,6 +82,8 @@ def sucessor(estado:str)->Set[Tuple[str,str]]:
         # pode ir para a direita
         #   trocar barra com barra +1
         cTuplas.add(("direita",trocaChar(estado, blankPos+1, blankPos)))
+        #print("tupla final " + str(cTuplas))
+        #print("Quantos sucessores? " + str(len(cTuplas)))
     return cTuplas
     """
     if(4 ==estado.rfind('_')):

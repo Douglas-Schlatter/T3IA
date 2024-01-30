@@ -1,6 +1,10 @@
 import solucao as solucao
-solucao.sucessor("2354_1687")
-
+import testa_solucao as test#
+#solucao.sucessor("2354_1687")
+test.TestaSolucao.test_funcao_sucessor(test.TestaSolucao)
+#test.TestaSolucao.test_funcao_sucessor(test.TestaSolucao)
+#test_instance = test()
+#test_instance.test_funcao_sucessor()
 #235
 #4 1
 #687
