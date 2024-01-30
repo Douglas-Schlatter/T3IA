@@ -120,9 +120,8 @@ def caminho(nodo: Nodo):
     nodoAtual = nodo
 
     while(nodoAtual.pai != None):
-        caminho.append(nodoAtual.estado)
+        caminho.append(nodoAtual.acao)
         nodoAtual = nodoAtual.pai
-    caminho.append(nodoAtual.estado)    #O loop não adiciona o último estado
     caminho.reverse()            #Precisa inverter porque é adicionado o caminho ao contrario na lista
     return caminho
 
