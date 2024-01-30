@@ -2,12 +2,10 @@ from typing import Iterable, Set, Tuple
 
 class Nodo:
 
-
     """
     Implemente a classe Nodo com os atributos descritos na funcao init
     """
-    def __init__(self, estado:str, acao:str, custo:int): #-> deixamos comentado aqui por enquanto para conseguir testar a ex1
-    #def __init__(self, estado:str, pai, acao:str, custo:int):
+    def __init__(self, estado:str, pai: 'Nodo', acao:str, custo:int):
 
         """
         Inicializa o nodo com os atributos recebidos
@@ -18,10 +16,9 @@ class Nodo:
         """
         # substitua a linha abaixo pelo seu codigo
         self.estado = estado
-        self.pai= None
+        self.pai = pai
         self.acao = acao
-        self.custo = custo + 1
-        #raise NotImplementedError
+        self.custo = custo
 
 def addFather(child: Nodo , pai:Nodo):
     child.pai = pai
@@ -112,7 +109,10 @@ def expande(nodo:Nodo)->Set[Nodo]:
     :return:
     """
     # substituir a linha abaixo pelo seu codigo
-    raise NotImplementedError
+    listaNodos = set()
+    for acao, estado in sucessor(nodo.estado):
+        listaNodos.add(Nodo(estado, nodo, acao, nodo.custo+1))
+    return listaNodos
 
 
 def astar_hamming(estado:str)->list[str]:
