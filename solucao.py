@@ -1,5 +1,5 @@
 from typing import Iterable, Set, Tuple
-
+import queue
 class Nodo:
 
     """
@@ -19,9 +19,15 @@ class Nodo:
         self.pai = pai
         self.acao = acao
         self.custo = custo
+        self.custaGeral =None
+    
+    def __lt__(self, other):
+        # Define the comparison method for Nodo instances
+        # You can customize this based on how you want to prioritize nodes
+        return self.custaGeral < other.custaGeral
 
-def addFather(child: Nodo , pai:Nodo):
-    child.pai = pai
+    # def setCustoGeral(self,custoH : int):
+    #     self.custoGeral = self.custo +custoH
 
 
 def trocaChar(estado, pos, pos2):
@@ -125,6 +131,69 @@ def caminho(nodo: Nodo):
     caminho.reverse()            #Precisa inverter porque é adicionado o caminho ao contrario na lista
     return caminho
 
+
+def astar_geral(heu: str, estado: str):
+# substituir a linha abaixo pelo seu codigo
+
+    visitados = []
+    #fronteira = [Nodo(estado, None, '', 0)]
+    fronteira = queue.PriorityQueue()
+    fronteira.put(Nodo(estado, None, '', 0))
+    func = 0
+    if heu=='h':
+        func=numHamming
+    else:
+        func=numManhattan 
+    #unc 
+
+    while (fronteira != []):
+        #nodoAtual= func(fronteira)
+        #nodoAtual = fronteira.pop() #Aqui depende da politica
+        nodoAtual = fronteira.get()
+        if (nodoAtual.estado == "12345678_"):
+            return caminho(nodoAtual)
+        elif(nodoAtual.estado not in visitados):# nodo atual ja esta em visitados? Se não adicione o a visitados e verifique seus visinhos
+            visitados.append(nodoAtual.estado)
+            for iNodo in expande(nodoAtual):
+                if (iNodo.estado not in visitados):
+                    iNodo.custaGeral = iNodo.custo + func(iNodo.estado)
+                    fronteira.put(iNodo)
+    return None
+
+def numHamming(estado: str): #Calcula quantos quadrados estão fora do lugar
+    valorHam = 0
+    for pos, letra in enumerate(estado):
+        if (letra == '_'):
+            if (pos != 8):
+                valorHam += 1
+        elif (int(letra) != pos+1):
+            valorHam += 1
+    return valorHam
+
+def numManhattan(estado: str):
+    obj = "123456789_"
+    
+    return 0
+
+def hamming(fronteira: list[Nodo]): #retorna com menor numHamming
+    menorNumHamming = 10**10
+    nodoResposta = None
+    for iNodo in fronteira:
+        iCusto = iNodo.custo + numHamming(iNodo.estado) 
+        if(iCusto< menorNumHamming):
+            nodoResposta = iNodo
+            menorNumHamming = iCusto
+    return nodoResposta
+
+
+# def manhattan(fronteira: list[Nodo]):
+#     obj = "123456789_"
+#     actual = 
+#     manhattan = 0
+#     for i in range(9):
+#         if()
+#     return
+
 def astar_hamming(estado:str)->list[str]:
     """
     Recebe um estado (string), executa a busca A* com h(n) = soma das distâncias de Hamming e
@@ -135,19 +204,8 @@ def astar_hamming(estado:str)->list[str]:
     :return:
     """
 
-    # substituir a linha abaixo pelo seu codigo
 
-    visitados = []
-    fronteira = [Nodo(estado, None, '', 0)]
-
-    while (fronteira != []):
-        nodoAtual = fronteira.pop() #Aqui depende da politica
-        if (nodoAtual.estado == "12345678_"):
-            return caminho(nodoAtual)
-        #elif(nodoAtual não está em visitados)  TODO
-        else:
-            visitados.append(nodoAtual)
-            fronteira.append(expande(nodoAtual))
+    return astar_geral('h',estado)
             
 
 def astar_manhattan(estado:str)->list[str]:
