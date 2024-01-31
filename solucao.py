@@ -22,8 +22,6 @@ class Nodo:
         self.custaGeral =None
     
     def __lt__(self, other):
-        # Define the comparison method for Nodo instances
-        # You can customize this based on how you want to prioritize nodes
         return self.custaGeral < other.custaGeral
 
     # def setCustoGeral(self,custoH : int):
@@ -131,33 +129,54 @@ def caminho(nodo: Nodo):
     caminho.reverse()            #Precisa inverter porque é adicionado o caminho ao contrario na lista
     return caminho
 
+def get_inv_count(arr):
+    inv_count = 0
+    for i in range(8):  
+        for j in range(i + 1, 9):
+            if arr[i] != '_' and arr[j] != '_' and arr[i] > arr[j]:
+                inv_count += 1
+    return inv_count
+
+def is_solvable(puzzle_str):
+    puzzle_list = list(puzzle_str)
+    inv_count = get_inv_count(puzzle_list)
+    return inv_count % 2 == 0
 
 def astar_geral(heu: str, estado: str):
-# substituir a linha abaixo pelo seu codigo
+
+    if not is_solvable(estado):
+        return None
+
+    func = 0
+    expansoes = 0
+    if heu=='h':
+        func=numHamming
+    elif heu=='m':
+        func=numManhattan
+    elif heu =='e':
+        func=numEuclidian 
 
     visitados = []
     #fronteira = [Nodo(estado, None, '', 0)]
     fronteira = queue.PriorityQueue()
-    fronteira.put(Nodo(estado, None, '', 0))
-    func = 0
-    if heu=='h':
-        func=numHamming
-    else:
-        func=numManhattan 
-    #unc 
+    first_node = Nodo(estado, None, '', 0)
+    first_node.custaGeral = func(first_node.estado)
+    fronteira.put(first_node)
 
-    while (fronteira != []):
-        #nodoAtual= func(fronteira)
-        #nodoAtual = fronteira.pop() #Aqui depende da politica
+    while not fronteira.empty():
         nodoAtual = fronteira.get()
         if (nodoAtual.estado == "12345678_"):
+            print(f"Custo final {nodoAtual.custo}")
+            print(f"Número de expansões {expansoes}")
             return caminho(nodoAtual)
         elif(nodoAtual.estado not in visitados):# nodo atual ja esta em visitados? Se não adicione o a visitados e verifique seus visinhos
             visitados.append(nodoAtual.estado)
+            expansoes+=1
             for iNodo in expande(nodoAtual):
                 if (iNodo.estado not in visitados):
                     iNodo.custaGeral = iNodo.custo + func(iNodo.estado)
                     fronteira.put(iNodo)
+
     return None
 
 def numHamming(estado: str): #Calcula quantos quadrados estão fora do lugar
@@ -171,28 +190,31 @@ def numHamming(estado: str): #Calcula quantos quadrados estão fora do lugar
     return valorHam
 
 def numManhattan(estado: str):
-    obj = "123456789_"
-    
-    return 0
-
-def hamming(fronteira: list[Nodo]): #retorna com menor numHamming
-    menorNumHamming = 10**10
-    nodoResposta = None
-    for iNodo in fronteira:
-        iCusto = iNodo.custo + numHamming(iNodo.estado) 
-        if(iCusto< menorNumHamming):
-            nodoResposta = iNodo
-            menorNumHamming = iCusto
-    return nodoResposta
+    obj = "12345678_"
+    estado = list(estado)
+    manhattan = 0
+    for i in range(9):
+        if(estado[i] != obj[i]):
+            pos_atual = estado.index(estado[i])
+            pos_obj = obj.index(estado[i])
+            dist_x = abs(pos_atual % 3 - pos_obj % 3)
+            dist_y = abs(pos_atual // 3 - pos_obj // 3)
+            manhattan += dist_x + dist_y
+    return manhattan
 
 
-# def manhattan(fronteira: list[Nodo]):
-#     obj = "123456789_"
-#     actual = 
-#     manhattan = 0
-#     for i in range(9):
-#         if()
-#     return
+def numEuclidian(estado: str):
+    obj = "12345678_"
+    estado = list(estado)
+    euclidian_dist = 0
+    for i in range(9):
+        if(estado[i] != obj[i]):
+            pos_atual = estado.index(estado[i])
+            pos_obj = obj.index(estado[i])
+            dist_x = abs(pos_atual % 3 - pos_obj % 3)
+            dist_y = abs(pos_atual // 3 - pos_obj // 3)
+            euclidian_dist += (dist_x**2 + dist_y**2) ** 0.5
+    return euclidian_dist
 
 def astar_hamming(estado:str)->list[str]:
     """
@@ -218,7 +240,19 @@ def astar_manhattan(estado:str)->list[str]:
     :return:
     """
     # substituir a linha abaixo pelo seu codigo
-    raise NotImplementedError
+    return astar_geral('m',estado)
+
+def astar_euclidian(estado:str)->list[str]:
+    """
+    Recebe um estado (string), executa a busca A* com h(n) = soma das distâncias Euclidianas e
+    retorna uma lista de ações que leva do
+    estado recebido até o objetivo ("12345678_").
+    Caso não haja solução a partir do estado recebido, retorna None
+    :param estado: str
+    :return:
+    """
+    # substituir a linha abaixo pelo seu codigo
+    return astar_geral('e',estado)
 
 #opcional,extra
 def bfs(estado:str)->list[str]:
