@@ -1,5 +1,7 @@
 from typing import Iterable, Set, Tuple
 import queue
+from collections import deque
+
 class Nodo:
 
     """
@@ -264,8 +266,29 @@ def bfs(estado:str)->list[str]:
     :param estado: str
     :return:
     """
-    # substituir a linha abaixo pelo seu codigo
-    raise NotImplementedError
+    if not is_solvable(estado):
+        return None
+
+    expansoes = 0
+    visitados = set()
+
+    first_node = Nodo(estado, None, '', 0)
+    fronteira = deque([first_node])
+
+    while fronteira:
+        nodoAtual = fronteira.popleft()
+        if (nodoAtual.estado == "12345678_"):
+            print(f"Custo final {nodoAtual.custo}")
+            print(f"Número de expansões {expansoes}")
+            return caminho(nodoAtual)
+        elif(nodoAtual.estado not in visitados):# nodo atual ja esta em visitados? Se não adicione o a visitados e verifique seus visinhos
+            visitados.add(nodoAtual.estado)
+            expansoes+=1
+            for iNodo in expande(nodoAtual):
+                if (iNodo.estado not in visitados):
+                    fronteira.append(iNodo)
+
+    return None
 
 #opcional,extra
 def dfs(estado:str)->list[str]:
@@ -277,8 +300,29 @@ def dfs(estado:str)->list[str]:
     :param estado: str
     :return:
     """
-    # substituir a linha abaixo pelo seu codigo
-    raise NotImplementedError
+    if not is_solvable(estado):
+        return None
+
+    expansoes = 0
+    visitados = set()
+
+    first_node = Nodo(estado, None, '', 0)
+    fronteira = [first_node]
+
+    while fronteira:
+        nodoAtual = fronteira.pop()
+        if (nodoAtual.estado == "12345678_"):
+            print(f"Custo final {nodoAtual.custo}")
+            print(f"Número de expansões {expansoes}")
+            return caminho(nodoAtual)
+        elif(nodoAtual.estado not in visitados):# nodo atual ja esta em visitados? Se não adicione o a visitados e verifique seus visinhos
+            visitados.add(nodoAtual.estado)
+            expansoes+=1
+            for iNodo in expande(nodoAtual):
+                if (iNodo.estado not in visitados):
+                    fronteira.append(iNodo)
+
+    return None
 
 #opcional,extra
 def astar_new_heuristic(estado:str)->list[str]:
